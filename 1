@@ -1,0 +1,280 @@
+import speech_recognition as sr
+import wikipedia
+import os
+import pyjokes
+import PyPDF2
+import pyttsx3
+import datetime
+import webbrowser
+import smtplib
+from IPython.display import Audio
+from tkinter import *
+import tkinter as tk
+
+engine = pyttsx3.init()
+#engine = pyttsx3.init('sapi5')
+
+voices = engine.getProperty('voices')
+
+engine.setProperty('voice', voices[1].id)
+
+
+def speak(audio):
+    engine.say(audio)
+    engine.runAndWait()
+
+
+def wishMe():
+    hour = int(datetime.datetime.now().hour)
+    if hour>=0 and hour<12:
+        speak("Good Morning Human!")
+
+    elif hour>=12 and hour<18:
+        speak("Good Afternoon Human!")  
+
+    else:
+        speak("Good Evening Human!")  
+
+    speak("I am A virtual Assistant....what can i do for you ")  
+   
+
+def takeCommand():
+    r = sr.Recognizer()
+    with sr.Microphone() as source:
+        print("Listening...")
+        r.pause_threshold = 1
+        audio = r.listen(source)
+
+    try:
+        print("Recognizing...")    
+        query = r.recognize_google(audio, language='en-in')
+        print(f"User said: {query}\n")
+
+    except Exception as e:
+         
+        print("Say that again please...")  
+        return "None"
+    return query
+
+ 
+
+def voiceassistant():
+
+    wishMe()
+    while True:
+    # if 1:
+        query = takeCommand().lower()
+
+       
+        if 'wikipedia' in query:
+            speak('Searching Wikipedia...')
+            query = query.replace("wikipedia", "")
+            results = wikipedia.summary(query, sentences=2)
+            speak("According to Wikipedia")
+            print(results)
+            speak(results)
+        elif 'the time' in query:
+            strTime = datetime.datetime.now().strftime("%H:%M:%S")    
+            speak(f"Human, the time is {strTime}")
+        elif ' youtube' in query:
+            speak("here you go.. dont spend too much time")
+            webbrowser.open("youtube.com")
+
+        elif ' google' in query:
+            speak("here you go")
+            webbrowser.open("google.com")
+           
+        elif "microsoft office" in query:
+            speak("here you go")
+            webbrowser.open("https://www.office.com/")
+        elif "news" in query:
+            speak("here is the news by google")
+            webbrowser.open("https://news.google.com/topstories?hl=en-US&gl=US&ceid=US:en")
+           
+        elif "stack overflow" in query:
+            speak("here you go. happy coding")
+            webbrowser.open("https://stackoverflow.com/")
+       
+        elif "hospital" in query:
+            speak("here you go, get well soon")
+            webbrowser.open("https://www.google.com/search?rlz=1C1CHZN_enQA935QA935&tbs=lf:1,lf_ui:2&tbm=lcl&sxsrf=AOaemvLQURmRQyLjXwXt0Fi4L4HBueitnA:1630772011682&q=nearest+hospital&rflfq=1&num=10&ved=2ahUKEwioxdyT2-XyAhVkAWMBHfa9AhkQtgN6BAgMEAM#rlfi=hd:;si:;mv:[[25.3057995,51.6067767],[25.1592318,51.4187564]];tbs:lrf:!1m4!1u3!2m2!3m1!1e1!1m4!1u2!2m2!2m1!1e1!2m1!1e2!2m1!1e3!3sIAE,lf:1,lf_ui:2")
+        elif 'how are you' in query:
+              speak("I am fine, Thank you")
+              speak("How are you")
+        elif "weather" in query:
+            speak("here it is!")
+            webbrowser.open("https://www.accuweather.com/en/qa/doha/271669/weather-forecast/271669")      
+
+        elif 'fine' in query or "good" in query:
+              speak("It's good to know that your fine")
+
+        elif "change name " in query:
+              query = query.replace("change my name to", "")
+              assname = query
+
+        elif "change name" in query:
+              speak("What would you like to call me, Sir ")
+              assname = takeCommand()
+              speak("Thanks for naming me")
+
+        elif "your name" in query or "What is your name" in query:
+              speak("My friends call me")
+              speak(assname)
+              print("My friends call me", assname)
+
+        elif 'exit' in query:
+              speak("Thanks for giving me your time")
+              exit()
+
+        elif ('search' in query) or ('play' in query):
+              query = query.replace("search", "")
+              query = query.replace("play", "")
+              webbrowser.open(query)
+             
+
+        elif "who am i" in query:
+              speak("If you talk then definitely your human.")
+             
+
+        elif "why have you come to the world" in query:
+              speak("Thanks to Group 1. further It's a secret")
+
+        elif "who are you" in query:
+              speak("I am your virtual assistant created by Group 1")
+
+        elif 'reason for you' in query:
+              speak("I was created as a Minor project by Group 1")
+
+        elif 'open bluestack' in query:
+              appli = r"C:\\ProgramData\\BlueStacks\\Client\\Bluestacks.exe"
+              os.startfile(appli)
+
+        elif "don't listen" in query or "stop listening" in query:
+              speak("for how much time you want to stop me from listening commands")
+              a = int(takeCommand())
+              time.sleep(a)
+              print(a)
+       
+       
+        elif "where is" in query:
+              query = query.replace("where is", "")
+              location = query
+              speak("User asked to Locate")
+              speak(location)
+              webbrowser.open("https://www.google.nl / maps / place/" + location + "")
+
+        elif "camera" in query or "take a photo" in query:
+              ec.capture(0, "Jarvis Camera ", "img.jpg")
+           
+        elif "restart" in query:
+              subprocess.call(["shutdown", "/r"])
+
+        elif "hibernate" in query or "sleep" in query:
+              speak("Hibernating")
+              subprocess.call("shutdown / h")
+             
+
+        elif "log off" in query or "sign out" in query:
+              speak("Make sure all the application are closed before sign-out")
+              time.sleep(5)
+              subprocess.call(["shutdown", "/l"])
+
+        elif "write a note" in query:
+              speak("What should i write, sir")
+              note = takeCommand()
+              file = open('jarvis.txt', 'w')
+              speak("Sir, Should i include date and time?")
+              snfm = takeCommand()
+              if 'yes' in snfm or 'sure' in snfm:
+                strTime = datetime.datetime.now().strftime("% H:% M:% S")
+                file.write(strTime)
+                file.write(" :- ")
+                file.write(note)
+              else:
+                file.write(note)
+             
+        elif "show note" in query:
+              speak("Showing Notes")
+              file = open("jarvis.txt", "r")
+              print(file.read())
+              speak(file.read(6))
+        elif 'joke' in query:
+            engine=pyttsx3.init()
+            def speak(audio):
+                engine.say(audio)
+                engine.runAndWait()
+            def joke():
+                speak(pyjokes.get_joke())
+            if _name_ == "_main_":
+                joke()
+                 
+        elif "log off" in query or "sign out" in query:
+              speak("Make sure all the application are closed before sign-out")
+              time.sleep(5)
+              subprocess.call(["shutdown", "/l"])
+
+        elif "how are you" in query:
+              speak("I'm fine, glad you asked me that, how about you")
+        elif "fine" in query:
+            speak('good')
+        elif "bad" in query:
+            speak("hope you get better")
+           
+        elif "you are nice" in query:
+              speak("It's hard to understand")
+        elif 'read' in query and 'file' in query and 'how' not in query:
+              pdf_name = input("Enter file directory:")
+              file = open(f"{pdf_name}","rb")
+              reader = PyPDF2.PdfFileReader(file)
+              pages = PyPDF2.PdfFileReader(file).numPages
+              speak(f"There are {pages} number of pages.")
+              print(f"Number of pages in this pdf are :{pages}")
+              while True:
+                speak("Which page do you want to hear/read:")
+                num_of_page = takeCommand()
+                if num_of_page < 0 or num_of_page > pages:
+                  break
+              while  num_of_page <= pages:
+                page = PyPDF2.PdfFileReader(file).getPage(num_of_page-1)
+                sound = str(page.extractText())
+                speak(sound)
+                speak("Do you want to continue?")
+                ask = takeCommand()
+                if ask.lower() == 'yes':
+                  num_of_page = num_of_page + 1
+                else:
+                  break      
+        elif "email" in query:
+            try:
+                speak("What would you like to send")
+                content = takeCommand()
+                to = "Email@gmail.com"    
+                sendEmail(to, content)
+                speak("the Email has been sent!")
+            except Exception as e:
+                print(e)
+                speak("An error has occured")    
+
+             
+           
+       
+def sendEmail(to, content):
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.ehlo()
+    server.starttls()
+    server.login('youremail@gmail.com', 'passwd')
+    server.sendmail('youremail@gmail.com', to, content)
+    server.close()
+
+
+           
+window = tk.Tk()
+window.title("Simulated Assistant(KSA)")
+window.geometry("800x1000")
+window.configure(background="azure")
+VA = tk.Button(window,text = 'START', command = voiceassistant, bg = 'lightgreen',height=10,width=20)
+VA.pack(pady=50)
+VA = tk.Button(window,text = 'STOP', command = window.destroy, bg = 'tomato',height=10,width=20)
+VA.pack(pady=50)
+#canvas1.create_window(200,180, window = VA)
+window.mainloop()
